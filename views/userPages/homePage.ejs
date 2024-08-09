@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        header {
+            background-color: #28a745;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+        }
+
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .welcome {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .user-details .card {
+            width: 300px;
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Welcome to Our Website</h1>
+        <a class="logout-button" href="/logOut">Logout</a>
+    </header>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+    </nav>
+
+    <div class="container">
+        <div class="welcome">
+            <h2>Hello, <%= userDetails.user?.name %>!</h2>
+            <p>We're glad to see you here.</p>
+        </div>
+
+        <div class="user-details">
+            <div class="card">
+                <h3>User Details</h3>
+                <p><strong>Name:</strong>
+                    <%= userDetails.user?.name %>
+                </p>
+                <p><strong>Email:</strong>
+                    <%= userDetails.user?.email %>
+                </p>
+                <p><strong>Phone:</strong>
+                    <%= userDetails.user?.phone %>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+    const userDet = '<%- JSON.stringify(userDetails) %>'
+    const user = JSON.parse(userDet)
+    console.log(user);
+
+</script>
+
+</html>

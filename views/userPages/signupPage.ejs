@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-Up Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+
+        .signup-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .signup-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .signup-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .signup-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .signup-container button:hover {
+            background-color: #218838;
+        }
+
+        .alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+        }
+
+        .login-button {
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .login-button:hover {
+            background-color: #0056b3;
+        }
+
+        .admin-login-button {
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #343a40;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-login-button:hover {
+            background-color: #23272b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .admin-login-button:active {
+            background-color: #1d2124;
+            transform: translateY(0);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="signup-container">
+        <h2>Sign Up</h2>
+        <% if (userExist) { %>
+            <div class="alert">
+                User Already Exist !!.
+            </div>
+            <% } %>
+                <form id="myForm" action="/signUpSubmit" method="post">
+                    <input type="text" name="name" placeholder="Name" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <input type="tel" name="phone" placeholder="Phone Number" required>
+                    <button type="submit">Sign Up</button>
+                </form>
+
+                <a class="login-button" href="/loginPage">Already have an account? Login here</a>
+                <div style="justify-content: center;align-items: center;width: 100%;margin-left: 140px;">
+                    <p>(or)</p>
+                </div>
+                <a class="admin-login-button" href="/adminLogin">Admin Login</a>
+    </div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"
+    integrity="sha512-WMEKGZ7L5LWgaPeJtw9MBM4i5w5OSBlSjTjCtSnvFJGSVD26gE5+Td12qN5pvWXhuWaWcVwF++F7aqu9cvqP0A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/additional-methods.min.js"
+    integrity="sha512-TiQST7x/0aMjgVTcep29gi+q5Lk5gVTUPE9XgN0g96rwtjEjLpod4mlBRKWHeBcvGBAEvJBmfDqh2hfMMmg+5A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $('#myForm').validate({
+        rules: {
+            name: {
+                pattern: /^[a-zA-Z]+(?: [a-zA-Z]+)*$/,
+                required: true
+            },
+            email: {
+                pattern: /^[a-zA-Z0-9._%+-]*@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                required: true
+            },
+            password: {
+                minlength: 6,
+                required: true
+            },
+            phone: {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                digits: true,
+                required: true
+            }
+        },
+        messages: {
+            name: {
+                pattern: "Please enter a valid username (letters and spaces only).",
+                required: "Username is required."
+            },
+            email: {
+                pattern: "Please enter a valid email address.",
+                required: "Email is required."
+            },
+            password: {
+                minlength: "The Password must be at least 6 characters",
+                required: "Password is required."
+            },
+            phone: {
+                digits: "Phone number must be Numeric",
+                minlength: "Phone number must be 10 Digits",
+                maxlength: "Phone number must be 10 Digits",
+                required: "Password is required."
+            }
+        },
+        errorClass: "error",
+        submitHandler: function (form) {
+            if ($('#myForm').valid()) { // Check if the form is valid
+                form.submit(); // Submit the form
+            }
+        }
+    });
+</script>
+
+</html>
