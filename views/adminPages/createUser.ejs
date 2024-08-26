@@ -18,7 +18,7 @@
     <header>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container">
-                <a href="#" class="navbar-brand">Admin-panel</a>
+                <a href="/adminDashBoard" class="navbar-brand">Admin-panel</a>
                 <a class="btn btn-dark" href="/adminLogout">Log Out</a>
             </div>
         </nav>
@@ -29,7 +29,7 @@
             <form id="myForm" action="/addUser" method="post">
                 <% if(userExist){ %>
                     <div class="alert alert-danger text-center">
-                        User already registered
+                        <%= userExist %>
                     </div>
                     <% } %>
                         <div class="form-group">
@@ -78,7 +78,8 @@
             },
             password: {
                 minlength: 4,
-                required: true
+                required: true,
+                pattern: /^[^\s]+$/
             },
             phone: {
                 required: true,
@@ -98,6 +99,7 @@
             },
             password: {
                 minlength: "The Password must be at least 4 characters",
+                pattern: "Please enter a valid Password (without white space).",
                 required: "Password is required."
             },
             phone: {
@@ -107,15 +109,6 @@
                 maxlength: "Phone number must be 10 digits."
             }
         },
-        errorPlacement: function (error, element) {
-            error.insertAfter(element); // Insert the error message after the corresponding input field
-        },
-        errorClass: "error",
-        submitHandler: function (form) {
-            if ($('#myForm').valid()) {
-                form.submit();
-            }
-        }
     });
 </script>
 

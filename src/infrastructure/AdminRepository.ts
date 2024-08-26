@@ -6,7 +6,7 @@ interface AdminRepositoryInterface {
     getUsers(): Promise<User[]>;
     deleteUser(id: string): Promise<void>;
     editUser(id: string, name: string, email: string, phone: string): Promise<void>;
-    addUser(name: string, email: string, phone: string, password: string, session: Session): Promise<void>;
+    addUser(name: string, email: string, phone: string, password: string, session: Session): Promise<{}>;
     searchUser(search: string): Promise<User[]>;
 }
 
@@ -35,17 +35,21 @@ class AdminRepository implements AdminRepositoryInterface {
         });
     }
 
-    async addUser(name: string, email: string, phone: string, password: string, session: Session): Promise<void> {
+    async addUser(name: string, email: string, phone: string, password: string, session: Session): Promise<{ success: boolean, message: string }> {
 
         const existingUser = await this.userCollection.findOne({ email });
-
-        const hashedPassword = await Helper.hashPassword(password);
-        await new this.userCollection({
-            name,
-            email,
-            phone,
-            password: hashedPassword,
-        }).save();
+        if (existingUser) {
+            return { success: false, message: "Email already exists !!" }
+        } else {
+            const hashedPassword = await Helper.hashPassword(password);
+            await new this.userCollection({
+                name,
+                email,
+                phone,
+                password: hashedPassword,
+            }).save();
+            return { success: true, message: "" }
+        }
     }
 
     async searchUser(search: string): Promise<User[]> {

@@ -15,10 +15,6 @@ interface AdminUseCaseInterface {
 class AdminUseCase implements AdminUseCaseInterface {
     private adminRepository: AdminRepository;
 
-    private getSession(req: any): any {
-        return req.session as any
-    }
-
     constructor(adminRepository: AdminRepository) {
         this.adminRepository = adminRepository;
     }
@@ -37,12 +33,10 @@ class AdminUseCase implements AdminUseCaseInterface {
                 email: process.env.ADMINEMAIL,
                 password: process.env.ADMINPASSWORD,
             };
-
             if (
                 credentials.email === req.body.username &&
                 req.body.password === credentials.password
             ) {
-
                 req.session.adminLoginSession = true
                 res.redirect('/adminDashBoard');
             } else {
@@ -55,12 +49,11 @@ class AdminUseCase implements AdminUseCaseInterface {
     }
 
     async adminDashBoard(req: any, res: any): Promise<void> {
-        const session = req.session as any;
-        if (session.logged) {
+        if (req.session?.adminLoginSession) {
             const usersData = await this.adminRepository.getUsers();
             res.render('adminPages/adminDashBoard', { users: usersData });
         } else {
-            res.redirect('/adminPage');
+            res.redirect('/adminLogin');
         }
     }
 
@@ -79,6 +72,7 @@ class AdminUseCase implements AdminUseCaseInterface {
             const { name, email, phone } = req.body;
             const { id } = req.params;
             await this.adminRepository.editUser(id, name, email, phone);
+            // res.send({ success: true })
             res.redirect('/adminDashBoard');
         } catch (error) {
             console.log(error);
@@ -86,17 +80,13 @@ class AdminUseCase implements AdminUseCaseInterface {
     }
 
     async addUserPage(req: any, res: any): Promise<void> {
-        const session = req.session as any;
-        if (session.logged) {
+        if (req.session?.adminLoginSession) {
             try {
                 res.render('adminPages/createUser', {
-                    inputErr: session.inputErr,
-                    errMsg: session.errorMessage,
-                    userExist: session.userExist,
+                    userExist: req.session.addUserExist,
                 });
-                session.userExist = false;
-                session.inputErr = false;
-                session.save();
+                req.session.addUserExist = false
+                req.session.save();
             } catch (error) {
                 console.log('error in getting add user page ', error);
             }
@@ -106,8 +96,13 @@ class AdminUseCase implements AdminUseCaseInterface {
     async addUser(req: any, res: any): Promise<void> {
         try {
             const { name, email, phone, password } = req.body;
-            await this.adminRepository.addUser(name, email, phone, password, req.session);
-            res.redirect('/adminDashBoard');
+            const result = await this.adminRepository.addUser(name, email, phone, password, req.session);
+            if (result?.success) {
+                res.redirect('/adminDashBoard');
+            } else {
+                req.session.addUserExist = result.message
+                res.redirect("/addUserPage")
+            }
         } catch (error) {
             console.log('error in adding user', error);
         }

@@ -26,6 +26,7 @@ class UserUseCase {
                     res.redirect('/');
                 }
                 else {
+                    console.log("Getting login page :");
                     res.render("userPages/loginPage", { notValid: req.session.notValid });
                 }
             }

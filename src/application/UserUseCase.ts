@@ -10,12 +10,14 @@ export class UserUseCase {
     }
 
     public async loginPage(req: any, res: any) {
+
         if (req.session.adminLoginSession) {
             res.redirect('/adminDashBoard');
         } else {
             if (req.session.isLogin) {
                 res.redirect('/')
             } else {
+                console.log("Getting login page :");
                 res.render("userPages/loginPage", { notValid: req.session.notValid });
             }
         }

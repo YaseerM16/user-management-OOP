@@ -10,9 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 class AdminUseCase {
-    getSession(req) {
-        return req.session;
-    }
     constructor(adminRepository) {
         this.adminRepository = adminRepository;
     }
@@ -50,13 +47,13 @@ class AdminUseCase {
     }
     adminDashBoard(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const session = req.session;
-            if (session.logged) {
+            var _a;
+            if ((_a = req.session) === null || _a === void 0 ? void 0 : _a.adminLoginSession) {
                 const usersData = yield this.adminRepository.getUsers();
                 res.render('adminPages/adminDashBoard', { users: usersData });
             }
             else {
-                res.redirect('/adminPage');
+                res.redirect('/adminLogin');
             }
         });
     }
@@ -78,6 +75,7 @@ class AdminUseCase {
                 const { name, email, phone } = req.body;
                 const { id } = req.params;
                 yield this.adminRepository.editUser(id, name, email, phone);
+                // res.send({ success: true })
                 res.redirect('/adminDashBoard');
             }
             catch (error) {
@@ -87,17 +85,14 @@ class AdminUseCase {
     }
     addUserPage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const session = req.session;
-            if (session.logged) {
+            var _a;
+            if ((_a = req.session) === null || _a === void 0 ? void 0 : _a.adminLoginSession) {
                 try {
                     res.render('adminPages/createUser', {
-                        inputErr: session.inputErr,
-                        errMsg: session.errorMessage,
-                        userExist: session.userExist,
+                        userExist: req.session.addUserExist,
                     });
-                    session.userExist = false;
-                    session.inputErr = false;
-                    session.save();
+                    req.session.addUserExist = false;
+                    req.session.save();
                 }
                 catch (error) {
                     console.log('error in getting add user page ', error);
@@ -109,8 +104,14 @@ class AdminUseCase {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { name, email, phone, password } = req.body;
-                yield this.adminRepository.addUser(name, email, phone, password, req.session);
-                res.redirect('/adminDashBoard');
+                const result = yield this.adminRepository.addUser(name, email, phone, password, req.session);
+                if (result === null || result === void 0 ? void 0 : result.success) {
+                    res.redirect('/adminDashBoard');
+                }
+                else {
+                    req.session.addUserExist = result.message;
+                    res.redirect("/addUserPage");
+                }
             }
             catch (error) {
                 console.log('error in adding user', error);

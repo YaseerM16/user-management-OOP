@@ -8,16 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const SessionService_1 = __importDefault(require("../../application/services/SessionService"));
 const isAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const session = SessionService_1.default.getInstance().getSession();
-    if (!session || !session.adminLogin) {
+    var _a;
+    if ((_a = req.session) === null || _a === void 0 ? void 0 : _a.adminLoginSession) {
+        next();
+    }
+    else {
+        console.log("Redirect by isAdmin (/adminLogin)");
         return res.redirect('/adminLogin');
     }
-    next();
 });
 exports.default = isAdmin;

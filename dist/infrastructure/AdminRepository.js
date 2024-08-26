@@ -38,13 +38,19 @@ class AdminRepository {
     addUser(name, email, phone, password, session) {
         return __awaiter(this, void 0, void 0, function* () {
             const existingUser = yield this.userCollection.findOne({ email });
-            const hashedPassword = yield helper_1.Helper.hashPassword(password);
-            yield new this.userCollection({
-                name,
-                email,
-                phone,
-                password: hashedPassword,
-            }).save();
+            if (existingUser) {
+                return { success: false, message: "Email already exists !!" };
+            }
+            else {
+                const hashedPassword = yield helper_1.Helper.hashPassword(password);
+                yield new this.userCollection({
+                    name,
+                    email,
+                    phone,
+                    password: hashedPassword,
+                }).save();
+                return { success: true, message: "" };
+            }
         });
     }
     searchUser(search) {
